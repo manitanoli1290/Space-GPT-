@@ -1,0 +1,558 @@
+```html
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SPACE GPT - BY MANI KHAN</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Marked.js for Markdown parsing -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800;900&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        spaceBg: '#030308',
+                        spacePanel: '#0a0a16',
+                        spaceBorder: '#1e1b4b',
+                        neonBlue: '#3b82f6',
+                        neonPurple: '#8b5cf6',
+                        neonCyan: '#06b6d4'
+                    },
+                    fontFamily: {
+                        orbitron: ['Orbitron', 'sans-serif'],
+                        rajdhani: ['Rajdhani', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #030308;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1e1b4b;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #3b82f6;
+        }
+
+        /* Cosmic Background & Star Animations */
+        .stars-bg {
+            background: radial-gradient(ellipse at bottom, #130a2a 0%, #030308 100%);
+            overflow: hidden;
+        }
+        
+        .star {
+            position: absolute;
+            background: #ffffff;
+            border-radius: 50%;
+            animation: twinkle var(--duration) infinite ease-in-out;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.2; transform: scale(0.8); }
+            50% { opacity: 1; transform: scale(1.2); }
+        }
+
+        /* Orbital Ring Animation */
+        @keyframes orbitRotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .orbital-ring {
+            animation: orbitRotate 25s linear infinite;
+            transform-origin: center;
+        }
+
+        /* Glow Visuals */
+        .glow-blue {
+            box-shadow: 0 0 25px rgba(59, 130, 246, 0.4);
+        }
+        .glow-text {
+            text-shadow: 0 0 10px rgba(59, 130, 246, 0.7), 0 0 20px rgba(139, 92, 246, 0.5);
+        }
+        
+        /* Glassmorphism Panel */
+        .glass-panel {
+            background: rgba(10, 10, 22, 0.8);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(99, 102, 241, 0.25);
+        }
+
+        /* Markdown Output Formatting */
+        .prose pre {
+            background: #050512 !important;
+            padding: 1rem;
+            border-radius: 0.75rem;
+            border: 1px solid #1e1b4b;
+            overflow-x: auto;
+            margin-top: 0.75rem;
+            margin-bottom: 0.75rem;
+        }
+        .prose code {
+            font-family: monospace;
+            color: #38bdf8;
+            background: rgba(30, 27, 75, 0.5);
+            padding: 0.15rem 0.4rem;
+            border-radius: 0.25rem;
+        }
+        .prose pre code {
+            background: transparent;
+            padding: 0;
+        }
+        .prose p {
+            margin-bottom: 0.75rem;
+        }
+        .prose p:last-child {
+            margin-bottom: 0;
+        }
+        .prose ul {
+            list-style-type: disc;
+            padding-left: 1.25rem;
+            margin-bottom: 0.75rem;
+        }
+        .prose ol {
+            list-style-type: decimal;
+            padding-left: 1.25rem;
+            margin-bottom: 0.75rem;
+        }
+
+        /* Typing Dots Animation */
+        .typing-dot {
+            animation: typingBounce 1.4s infinite ease-in-out;
+        }
+        .typing-dot:nth-child(1) { animation-delay: 0s; }
+        .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+        .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes typingBounce {
+            0%, 80%, 100% { transform: translateY(0); opacity: 0.4; }
+            40% { transform: translateY(-6px); opacity: 1; }
+        }
+    </style>
+</head>
+<body class="h-full bg-spaceBg text-gray-100 font-rajdhani flex flex-col antialiased relative stars-bg">
+
+    <!-- Dynamic Background Stars -->
+    <div id="stars-container" class="absolute inset-0 pointer-events-none z-0"></div>
+
+    <!-- Navigation Header -->
+    <header class="relative z-10 glass-panel px-4 py-3 sm:px-8 border-b border-indigo-950/80 flex items-center justify-between shadow-2xl">
+        <div class="flex items-center space-x-3">
+            <!-- Embedded Rocket Logo SVG -->
+            <div class="relative w-11 h-11 flex-shrink-0">
+                <svg class="w-full h-full drop-shadow-[0_0_12px_rgba(59,130,246,0.7)]" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                    <circle class="orbital-ring" cx="100" cy="100" r="75" stroke="#3b82f6" stroke-width="3" stroke-dasharray="10,8" fill="none"/>
+                    <circle cx="100" cy="100" r="58" fill="url(#headerLogoGrad)"/>
+                    <defs>
+                        <linearGradient id="headerLogoGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#3b82f6;stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:#8b5cf6;stop-opacity:1" />
+                        </linearGradient>
+                    </defs>
+                    <path d="M 100 58 C 112 78, 118 95, 118 122 L 82 122 C 82 95, 88 78, 100 58 Z" fill="#ffffff"/>
+                    <circle cx="100" cy="95" r="6" fill="#3b82f6"/>
+                    <polygon points="82,115 70,130 82,126" fill="#ef4444"/>
+                    <polygon points="118,115 130,130 118,126" fill="#ef4444"/>
+                </svg>
+            </div>
+            <div>
+                <h1 class="font-orbitron font-extrabold text-lg sm:text-2xl tracking-widest text-white glow-text leading-tight">
+                    SPACE GPT
+                </h1>
+                <p class="text-[10px] sm:text-xs font-bold tracking-[0.25em] text-cyan-400">
+                    BY MANI KHAN
+                </p>
+            </div>
+        </div>
+
+        <!-- Header Action Controls -->
+        <div class="flex items-center space-x-2 sm:space-x-3">
+            <div class="hidden md:flex items-center space-x-2 px-3 py-1.5 rounded-full bg-indigo-950/60 border border-indigo-800/50 text-xs text-gray-300">
+                <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_10px_#34d399]"></span>
+                <span class="font-orbitron tracking-wider text-[11px]">CORE ONLINE</span>
+            </div>
+
+            <button id="key-modal-btn" title="API Key Settings" class="p-2 sm:px-3 sm:py-2 rounded-xl bg-indigo-950/80 hover:bg-indigo-900 border border-indigo-700/60 text-cyan-400 hover:text-cyan-300 transition-all duration-200 flex items-center space-x-1.5 text-xs font-semibold">
+                <i class="fa-solid fa-key"></i>
+                <span class="hidden sm:inline">API Key</span>
+            </button>
+
+            <button id="export-chat-btn" title="Export Chat Logs" class="p-2 sm:px-3 sm:py-2 rounded-xl bg-indigo-950/80 hover:bg-indigo-900 border border-indigo-700/60 text-purple-400 hover:text-purple-300 transition-all duration-200 flex items-center space-x-1.5 text-xs font-semibold">
+                <i class="fa-solid fa-download"></i>
+                <span class="hidden sm:inline">Export</span>
+            </button>
+
+            <button id="clear-chat-btn" title="Clear Chat History" class="p-2 sm:px-3 sm:py-2 rounded-xl bg-indigo-950/80 hover:bg-red-950/50 border border-indigo-700/60 hover:border-red-700/60 text-gray-400 hover:text-red-400 transition-all duration-200 flex items-center space-x-1.5 text-xs font-semibold">
+                <i class="fa-solid fa-trash-can"></i>
+                <span class="hidden sm:inline">Clear</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Application Viewport -->
+    <main class="relative z-10 flex-1 flex flex-col max-w-5xl w-full mx-auto px-2 sm:px-4 py-3 sm:py-4 overflow-hidden">
+        
+        <!-- Chat Container Window -->
+        <div id="chat-window" class="flex-1 glass-panel rounded-2xl p-4 sm:p-6 overflow-y-auto flex flex-col space-y-4 border border-indigo-900/40 shadow-2xl">
+            
+            <!-- Default Welcome Dashboard Banner -->
+            <div id="welcome-card" class="text-center my-auto py-6 px-4 flex flex-col items-center">
+                <div class="relative w-32 h-32 mb-4">
+                    <svg class="w-full h-full drop-shadow-[0_0_25px_rgba(139,92,246,0.6)]" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                        <circle class="orbital-ring" cx="100" cy="100" r="75" stroke="#3b82f6" stroke-width="2.5" stroke-dasharray="10,6" fill="none"/>
+                        <circle cx="100" cy="100" r="58" fill="url(#heroLogoGrad)"/>
+                        <defs>
+                            <linearGradient id="heroLogoGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" style="stop-color:#3b82f6;stop-opacity:1" />
+                                <stop offset="100%" style="stop-color:#8b5cf6;stop-opacity:1" />
+                            </linearGradient>
+                        </defs>
+                        <path d="M 100 58 C 112 78, 118 95, 118 122 L 82 122 C 82 95, 88 78, 100 58 Z" fill="#ffffff"/>
+                        <circle cx="100" cy="95" r="6" fill="#3b82f6"/>
+                        <polygon points="82,115 70,130 82,126" fill="#ef4444"/>
+                        <polygon points="118,115 130,130 118,126" fill="#ef4444"/>
+                    </svg>
+                </div>
+                <h2 class="font-orbitron text-2xl sm:text-3xl font-black tracking-widest text-white glow-text mb-1">
+                    SPACE GPT
+                </h2>
+                <p class="text-xs font-extrabold tracking-[0.35em] text-purple-400 mb-3">
+                    CREATED BY MANI KHAN
+                </p>
+                <p class="text-sm sm:text-base text-gray-300 max-w-md mx-auto leading-relaxed font-medium">
+                    Welcome to the space intelligence terminal. Ask me anything about physics, space exploration, programming, science, or general knowledge.
+                </p>
+
+                <!-- Prompt Starter Chips -->
+                <div class="mt-6 flex flex-wrap justify-center gap-2.5 max-w-xl">
+                    <button class="chip-btn text-xs sm:text-sm bg-indigo-950/80 hover:bg-indigo-900 border border-indigo-700/50 hover:border-cyan-400 text-cyan-300 py-2 px-3.5 rounded-xl transition-all duration-200 shadow-md">
+                        🚀 Explain Black Holes & Event Horizons
+                    </button>
+                    <button class="chip-btn text-xs sm:text-sm bg-indigo-950/80 hover:bg-indigo-900 border border-indigo-700/50 hover:border-purple-400 text-purple-300 py-2 px-3.5 rounded-xl transition-all duration-200 shadow-md">
+                        💻 Write Python Script for Data Sorting
+                    </button>
+                    <button class="chip-btn text-xs sm:text-sm bg-indigo-950/80 hover:bg-indigo-900 border border-indigo-700/50 hover:border-cyan-400 text-cyan-300 py-2 px-3.5 rounded-xl transition-all duration-200 shadow-md">
+                        🌌 Explore Mars Human Colonization Mission
+                    </button>
+                    <button class="chip-btn text-xs sm:text-sm bg-indigo-950/80 hover:bg-indigo-900 border border-indigo-700/50 hover:border-purple-400 text-purple-300 py-2 px-3.5 rounded-xl transition-all duration-200 shadow-md">
+                        ⚡ What is Quantum Entanglement?
+                    </button>
+                </div>
+            </div>
+
+            <!-- Dynamic Chat Messages Area -->
+            <div id="messages-list" class="flex flex-col space-y-4 w-full"></div>
+        </div>
+
+        <!-- User Input Area -->
+        <div class="mt-3 relative glass-panel rounded-2xl p-2 border border-indigo-900/50 focus-within:border-cyan-500/70 transition-all duration-300 shadow-2xl">
+            <form id="chat-form" class="flex items-end space-x-2">
+                <textarea id="user-input" rows="1" placeholder="Transmit your message to Space GPT..." class="flex-1 bg-transparent text-gray-100 placeholder-gray-500 text-sm sm:text-base px-3 py-2.5 focus:outline-none resize-none max-h-32 font-rajdhani font-medium"></textarea>
+                
+                <button type="submit" id="send-btn" class="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white font-orbitron font-bold p-3 sm:px-5 sm:py-3 rounded-xl transition-all duration-200 flex items-center justify-center shadow-[0_0_15px_rgba(59,130,246,0.4)] disabled:opacity-50">
+                    <i class="fa-solid fa-paper-plane text-sm sm:text-base"></i>
+                </button>
+            </form>
+        </div>
+
+        <div class="text-center mt-2">
+            <p class="text-[11px] text-gray-500 tracking-wider">SPACE GPT ENGINE • POWERED BY GEMINI 2.5 FLASH • ARCHITECTURE BY MANI KHAN</p>
+        </div>
+    </main>
+
+    <!-- API Key Configuration Modal -->
+    <div id="key-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-md hidden p-4">
+        <div class="glass-panel w-full max-w-md rounded-2xl border border-indigo-800 p-6 shadow-2xl relative">
+            <button id="close-modal-btn" class="absolute top-4 right-4 text-gray-400 hover:text-white transition-colors">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+            <div class="flex items-center space-x-3 mb-4">
+                <div class="p-2.5 rounded-xl bg-indigo-950 text-cyan-400 border border-indigo-800">
+                    <i class="fa-solid fa-key text-xl"></i>
+                </div>
+                <div>
+                    <h3 class="font-orbitron font-bold text-lg text-white">Gemini API Key</h3>
+                    <p class="text-xs text-gray-400">Configure client key for live API access</p>
+                </div>
+            </div>
+            
+            <p class="text-xs text-gray-300 leading-relaxed mb-4">
+                Enter your Google Gemini API key below to unlock real-time intelligence. Your key is saved locally and securely inside your browser's <code class="text-cyan-400">localStorage</code>.
+            </p>
+
+            <input type="password" id="api-key-input" placeholder="AIzaSy..." class="w-full bg-spaceBg border border-indigo-900 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-cyan-400 mb-4 font-mono">
+            
+            <div class="flex space-x-2">
+                <button id="save-key-btn" class="flex-1 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white font-orbitron font-bold py-2.5 rounded-xl text-sm transition-all duration-200">
+                    Save Key
+                </button>
+                <button id="clear-key-btn" class="bg-red-950/60 hover:bg-red-900 border border-red-800/50 text-red-300 px-4 py-2.5 rounded-xl text-sm transition-all duration-200">
+                    Remove Key
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // System Persona Definition
+        const SYSTEM_INSTRUCTION_TEXT = "You are Space GPT, created by MANI KHAN. You are a futuristic, intelligent, helpful AI assistant.";
+
+        // State Variables
+        let apiKey = localStorage.getItem('SPACE_GPT_API_KEY') || '';
+        let chatHistory = [];
+
+        // DOM Elements
+        const starsContainer = document.getElementById('stars-container');
+        const chatWindow = document.getElementById('chat-window');
+        const welcomeCard = document.getElementById('welcome-card');
+        const messagesList = document.getElementById('messages-list');
+        const chatForm = document.getElementById('chat-form');
+        const userInput = document.getElementById('user-input');
+        const sendBtn = document.getElementById('send-btn');
+        const clearChatBtn = document.getElementById('clear-chat-btn');
+        const exportChatBtn = document.getElementById('export-chat-btn');
+        const keyModalBtn = document.getElementById('key-modal-btn');
+        const keyModal = document.getElementById('key-modal');
+        const closeModalBtn = document.getElementById('close-modal-btn');
+        const apiKeyInput = document.getElementById('api-key-input');
+        const saveKeyBtn = document.getElementById('save-key-btn');
+        const clearKeyBtn = document.getElementById('clear-key-btn');
+
+        function generateStarfield() {
+            const starCount = 130;
+            for (let i = 0; i < starCount; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                const size = Math.random() * 2 + 1;
+                star.style.width = `${size}px`;
+                star.style.height = `${size}px`;
+                star.style.top = `${Math.random() * 100}%`;
+                star.style.left = `${Math.random() * 100}%`;
+                star.style.setProperty('--duration', `${Math.random() * 3 + 2}s`);
+                starsContainer.appendChild(star);
+            }
+        }
+        generateStarfield();
+
+        // Auto-Resize Input Textarea
+        userInput.addEventListener('input', () => {
+            userInput.style.height = 'auto';
+            userInput.style.height = `${Math.min(userInput.scrollHeight, 128)}px`;
+        });
+
+        document.querySelectorAll('.chip-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const text = btn.innerText.replace(/^[^\s]+\s/, '');
+                userInput.value = text;
+                userInput.focus();
+                userInput.style.height = 'auto';
+                userInput.style.height = `${Math.min(userInput.scrollHeight, 128)}px`;
+            });
+        });
+
+        // API Key Modal Controls
+        keyModalBtn.addEventListener('click', () => {
+            apiKeyInput.value = apiKey;
+            keyModal.classList.remove('hidden');
+        });
+        closeModalBtn.addEventListener('click', () => keyModal.classList.add('hidden'));
+        saveKeyBtn.addEventListener('click', () => {
+            apiKey = apiKeyInput.value.trim();
+            localStorage.setItem('SPACE_GPT_API_KEY', apiKey);
+            keyModal.classList.add('hidden');
+            alert('API Key configured successfully!');
+        });
+        clearKeyBtn.addEventListener('click', () => {
+            apiKey = '';
+            localStorage.removeItem('SPACE_GPT_API_KEY');
+            apiKeyInput.value = '';
+            alert('API Key removed. Space GPT will run in simulation mode.');
+        });
+
+        // Clear Chat Session Memory
+        clearChatBtn.addEventListener('click', () => {
+            if (confirm('Clear current Space GPT session history?')) {
+                chatHistory = [];
+                messagesList.innerHTML = '';
+                welcomeCard.classList.remove('hidden');
+            }
+        });
+
+        // Export Conversation Logs
+        exportChatBtn.addEventListener('click', () => {
+            if (chatHistory.length === 0) {
+                alert('No chat history to export.');
+                return;
+            }
+            let logText = "=========================================\n";
+            logText += "SPACE GPT CHAT LOGS - BY MANI KHAN\n";
+            logText += `Export Date: ${new Date().toLocaleString()}\n`;
+            logText += "=========================================\n\n";
+
+            chatHistory.forEach((turn) => {
+                const role = turn.role === 'user' ? 'USER' : 'SPACE GPT';
+                const content = turn.parts[0].text;
+                logText += `[${role}]:\n${content}\n\n-----------------------------------------\n\n`;
+            });
+
+            const blob = new Blob([logText], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `SpaceGPT_ChatLog_${Date.now()}.txt`;
+            a.click();
+            URL.revokeObjectURL(url);
+        });
+
+        function appendUserMessage(text) {
+            welcomeCard.classList.add('hidden');
+            const msgDiv = document.createElement('div');
+            msgDiv.className = 'flex justify-end my-2';
+            msgDiv.innerHTML = `
+                <div class="max-w-[85%] sm:max-w-[75%] bg-indigo-950/90 border border-indigo-700/60 rounded-2xl rounded-tr-none px-4 py-3 text-white text-sm sm:text-base shadow-lg">
+                    ${escapeHtml(text)}
+                </div>
+            `;
+            messagesList.appendChild(msgDiv);
+            chatWindow.scrollTop = chatWindow.scrollHeight;
+        }
+
+        function createBotMessageContainer() {
+            welcomeCard.classList.add('hidden');
+            const msgDiv = document.createElement('div');
+            msgDiv.className = 'flex justify-start my-2';
+            
+            const uniqueId = 'bot-msg-' + Date.now();
+            msgDiv.innerHTML = `
+                <div class="flex items-start space-x-2 sm:space-x-3 max-w-[90%] sm:max-w-[80%]">
+                    <div class="w-8 h-8 rounded-full bg-indigo-900 border border-cyan-400/50 flex items-center justify-center flex-shrink-0 mt-1 shadow-[0_0_10px_rgba(59,130,246,0.3)]">
+                        <i class="fa-solid fa-rocket text-cyan-300 text-xs"></i>
+                    </div>
+                    <div class="glass-panel border border-indigo-900/80 rounded-2xl rounded-tl-none p-4 text-gray-200 text-sm sm:text-base shadow-xl flex-1 relative group">
+                        <div id="${uniqueId}" class="prose prose-invert max-w-none text-sm sm:text-base leading-relaxed">
+                            <div class="flex items-center space-x-2 text-cyan-400">
+                                <span class="typing-dot w-2 h-2 rounded-full bg-cyan-400"></span>
+                                <span class="typing-dot w-2 h-2 rounded-full bg-cyan-400"></span>
+                                <span class="typing-dot w-2 h-2 rounded-full bg-cyan-400"></span>
+                                <span class="text-xs text-gray-400 font-mono ml-2">Space GPT calculating...</span>
+                            </div>
+                        </div>
+                        <button onclick="copyResponse('${uniqueId}')" title="Copy Response" class="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity p-1.5 rounded-lg bg-indigo-950 border border-indigo-800 text-gray-400 hover:text-cyan-300 text-xs">
+                            <i class="fa-solid fa-copy"></i>
+                        </button>
+                    </div>
+                </div>
+            `;
+            messagesList.appendChild(msgDiv);
+            chatWindow.scrollTop = chatWindow.scrollHeight;
+            return uniqueId;
+        }
+
+        window.copyResponse = function(id) {
+            const container = document.getElementById(id);
+            if (!container) return;
+            const text = container.innerText;
+            navigator.clipboard.writeText(text).then(() => {
+                alert('Response copied to clipboard!');
+            }).catch(() => {
+                document.execCommand('copy');
+                alert('Response copied to clipboard!');
+            });
+        };
+
+        function escapeHtml(text) {
+            return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+        }
+
+        chatForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const text = userInput.value.trim();
+            if (!text) return;
+
+            appendUserMessage(text);
+            userInput.value = '';
+            userInput.style.height = 'auto';
+
+            const containerId = createBotMessageContainer();
+            const containerEl = document.getElementById(containerId);
+
+            // Maintain conversation turn history
+            chatHistory.push({ role: 'user', parts: [{ text: text }] });
+
+            if (apiKey) {
+                // Live Gemini 2.5 Flash Endpoint
+                try {
+                    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
+                    
+                    const payload = {
+                        contents: chatHistory,
+                        systemInstruction: {
+                            parts: [{ text: SYSTEM_INSTRUCTION_TEXT }]
+                        }
+                    };
+
+                    const response = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    const data = await response.json();
+                    
+                    if (data.candidates && data.candidates[0]?.content?.parts[0]?.text) {
+                        const reply = data.candidates[0].content.parts[0].text;
+                        containerEl.innerHTML = marked.parse(reply);
+                        chatHistory.push({ role: 'model', parts: [{ text: reply }] });
+                    } else if (data.error) {
+                        containerEl.innerHTML = `<span class="text-red-400 font-semibold"><i class="fa-solid fa-triangle-exclamation mr-1"></i> Gemini API Error: ${data.error.message || 'Failed to generate response.'}</span>`;
+                    } else {
+                        containerEl.innerHTML = `<span class="text-red-400 font-semibold"><i class="fa-solid fa-triangle-exclamation mr-1"></i> Unexpected response structured received from Gemini API.</span>`;
+                    }
+                } catch (err) {
+                    containerEl.innerHTML = `<span class="text-red-400 font-semibold"><i class="fa-solid fa-plug-circle-xmark mr-1"></i> Network Error: Unable to reach Gemini core servers.</span>`;
+                }
+            } else {
+                // Simulated Mode fallback
+                setTimeout(() => {
+                    const mockReplies = [
+                        `Greetings! I am **Space GPT**, developed by **MANI KHAN**.\n\nYou transmitted: "*${text}*"\n\nTo activate real-time intelligence via Gemini 2.5 Flash, click the **API Key** button (<i class="fa-solid fa-key"></i>) at the top right and save your Google Gemini API key!`,
+                        `**Space GPT Core Diagnostic:**\n- Input Directive: "${text}"\n- Architect: **MANI KHAN**\n\nTo unlock live conversation and reasoning capabilities, please configure your Gemini API Key in the settings menu above.`,
+                        `**Orbital Status:** Online.\n\nThank you for communicating with **Space GPT (By MANI KHAN)**. To get live answers, save your API key using the key button in the navigation bar.`
+                    ];
+                    const randomReply = mockReplies[Math.floor(Math.random() * mockReplies.length)];
+                    containerEl.innerHTML = marked.parse(randomReply);
+                    chatHistory.push({ role: 'model', parts: [{ text: randomReply }] });
+                }, 800);
+            }
+
+            chatWindow.scrollTop = chatWindow.scrollHeight;
+        });
+
+        // Shift+Enter behavior
+        userInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                chatForm.dispatchEvent(new Event('submit'));
+            }
+        });
+    </script>
+</body>
+</html>
+```
